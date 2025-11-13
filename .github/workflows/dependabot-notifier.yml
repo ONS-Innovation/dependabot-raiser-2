@@ -15,6 +15,6 @@ jobs:
         steps:
             - name: Post comment using GitHub CLI
               run: |
-                gh issue comment 123 \
+                gh issue comment 35 \
                 --repo org/template-repo \
                 --body "Dependabot PR in [${{ github.repository }}](${{ github.event.pull_request.html_url }})"
