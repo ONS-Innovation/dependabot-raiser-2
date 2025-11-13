@@ -1,0 +1,21 @@
+name: Push Dependabot PRs
+
+permissions:
+  contents: read
+  pull-requests: write
+
+on:
+  pull_request:
+    types: [opened, reopened]
+    branches: ["**"]
+
+jobs:
+    notify-template:
+        if: github.actor == 'dependabot[bot]'
+        runs-on: ubuntu-latest
+        steps:
+            - name: Post comment using GitHub CLI
+              run: |
+                gh issue comment 123 \
+                --repo org/template-repo \
+                --body "Dependabot PR in [${{ github.repository }}](${{ github.event.pull_request.html_url }})"
