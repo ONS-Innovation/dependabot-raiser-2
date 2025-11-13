@@ -1,4 +1,4 @@
-name: Notify template repo of Dependabot PRs
+name: Push Dependabot PRs
 
 permissions:
   contents: read
