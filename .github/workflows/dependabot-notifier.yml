@@ -11,7 +11,6 @@ on:
 
 jobs:
     notify-template:
-        if: github.actor == 'dependabot[bot]'
         runs-on: ubuntu-latest
         steps:
             - name: Post comment using GitHub CLI
