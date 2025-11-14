@@ -7,36 +7,25 @@ on:
 
 permissions:
   contents: read
-  issues: write
-  pull-requests: write
 
 jobs:
-  create-and-transfer:
+  notify-dependabot-pr:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Create issue
-        id: create_issue
-        env:
-          GH_TOKEN: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}
+      - name: Send repository dispatch
         run: |
-          ISSUE_URL="https://github.com/${{ github.repository }}/commit/${{ github.sha }}"
-
-          CREATED_URL=$(gh issue create \
-            --title "Dependabot PR in ${{ github.repository }}" \
-            --body "Dependabot PR detected. Commit: $ISSUE_URL")
-
-          ISSUE_NUMBER=$(echo "$CREATED_URL" | sed -E 's#.*/issues/([0-9]+).*#\1#')
-
-          echo "issue_number=$ISSUE_NUMBER" >> "$GITHUB_OUTPUT"
-
-      - name: Transfer issue to template repo
-        env:
-          GH_TOKEN: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}
-        run: |
-          gh issue transfer \
-            ${{ steps.create_issue.outputs.issue_number }} \
-            ONS-Innovation/python-rap-template
+          curl -X POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            https://api.github.com/repos/ONS-Innovation/python-rap-template/dispatches \
+            -d '{
+              "event_type": "dependabot_notice",
+              "client_payload": {
+                "repo": "'"${{ github.repository }}"'",
+                "sha": "'"${{ github.sha }}"'",
+                "ref": "'"${{ github.ref }}"'"
+              }
+            }'
