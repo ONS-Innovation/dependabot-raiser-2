@@ -1,23 +1,39 @@
 name: Push Dependabot PRs
 
-permissions:
-  contents: read
-  pull-requests: write
-  issues: write
-
 on:
   push:
     branches:
       - "**"
 
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
 jobs:
-    notify-template:
-        runs-on: ubuntu-latest
-        steps:
-            - name: Post comment using GitHub CLI
-              env:
-                GH_TOKEN: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}
-              run: |
-                gh issue comment 35 \
-                --repo ONS-Innovation/python-rap-template \
-                --body "Dependabot PR in [${{ github.repository }}](${{ github.event.pull_request.html_url }})"
+  create-and-transfer:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Create issue
+        id: create_issue
+        env:
+          GH_TOKEN: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}
+        run: |
+          ISSUE_URL="https://github.com/${{ github.repository }}/commit/${{ github.sha }}"
+
+          ISSUE_NUMBER=$(gh issue create \
+            --title "Dependabot PR / Push detected in ${{ github.repository }}" \
+            --body "Dependabot PR Raised.\n\nCommit: $ISSUE_URL" \
+            --json number \
+            --jq '.number')
+
+          echo "issue_number=$ISSUE_NUMBER" >> $GITHUB_OUTPUT
+
+      - name: Transfer issue to template repo
+        env:
+          GH_TOKEN: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue transfer \
+            ${{ steps.create_issue.outputs.issue_number }} \
+            ONS-Innovation/python-rap-template
