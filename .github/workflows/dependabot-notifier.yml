@@ -22,13 +22,13 @@ jobs:
         run: |
           ISSUE_URL="https://github.com/${{ github.repository }}/commit/${{ github.sha }}"
 
-          ISSUE_NUMBER=$(gh issue create \
-            --title "Dependabot PR / Push detected in ${{ github.repository }}" \
-            --body "Dependabot PR Raised.\n\nCommit: $ISSUE_URL" \
-            --json number \
-            --jq '.number')
+          CREATED_URL=$(gh issue create \
+            --title "Dependabot PR in ${{ github.repository }}" \
+            --body "Dependabot PR detected: \n\nCommit: $ISSUE_URL")
 
-          echo "issue_number=$ISSUE_NUMBER" >> $GITHUB_OUTPUT
+          ISSUE_NUMBER=$(echo "$CREATED_URL" | sed -E 's#.*/issues/([0-9]+).*#\1#')
+
+          echo "issue_number=$ISSUE_NUMBER" >> "$GITHUB_OUTPUT"
 
       - name: Transfer issue to template repo
         env:
