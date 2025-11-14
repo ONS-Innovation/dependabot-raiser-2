@@ -11,7 +11,7 @@ test to raise Dependabot PRs on template repo
 
 This project follows the Reproducible Analytical Pipeline (RAP) methodology, providing a modular ETL (Extract, Transform, Load) framework for data processing workflows.
 
-**IMPORTANT**: This README was generated from a template..
+**IMPORTANT**: This README was generated from a template...
 Please update it with specific information about your project, including:
 
 > - Detailed project description and purpose
