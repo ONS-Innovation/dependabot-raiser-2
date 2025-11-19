@@ -24,4 +24,3 @@ jobs:
           CREATED_URL=$(gh issue create \
             --title "Dependabot PR in ${{ github.repository }}" \
             --body "@joepercival Dependabot PR detected: \n\nCommit: $ISSUE_URL")
-          ISSUE_NUMBER=$(echo "$CREATED_URL" | sed -E 's#.*/issues/([0-9]+).*#\1#')
