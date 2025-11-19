@@ -14,8 +14,6 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: Post comment using GitHub CLI
-              env:
-               GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
               run: |
                 gh issue comment 35 \
                 --repo ONS-Innovation/python-rap-template \
