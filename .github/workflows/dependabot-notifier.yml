@@ -23,4 +23,4 @@ jobs:
           ISSUE_URL="https://github.com/${{ github.repository }}/commit/${{ github.sha }}"
           CREATED_URL=$(gh issue create \
             --title "Dependabot PR in ${{ github.repository }}" \
-            --body "@joepercival Dependabot PR detected: \n\nCommit: $ISSUE_URL")
+            --body "@joepercival Dependabot PR detected at commit: $ISSUE_URL")
