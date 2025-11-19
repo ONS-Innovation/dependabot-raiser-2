@@ -2,21 +2,25 @@ name: Push Dependabot PRs
 
 permissions:
   contents: read
-  pull-requests: write
   issues: write
+  pull-requests: write
 
 on:
   push:
     branches: ["**"]
 
 jobs:
-    notify-template:
-        runs-on: ubuntu-latest
-        steps:
-            - name: Post comment using GitHub CLI
-              env:
-                GH_TOKEN: ${{ github.token }}
-              run: |
-                gh issue comment 35 \
-                --repo ONS-Innovation/python-rap-template \
-                --body "Dependabot PR has been raised"
+  create-dependabot-issue:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create issue
+        id: create_issue
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ISSUE_URL="https://github.com/${{ github.repository }}/commit/${{ github.sha }}"
+          CREATED_URL=$(gh issue create \
+            --title "Dependabot PR in ${{ github.repository }}" \
+            --body "@joepercival Dependabot PR detected: \n\nCommit: $ISSUE_URL")
+          ISSUE_NUMBER=$(echo "$CREATED_URL" | sed -E 's#.*/issues/([0-9]+).*#\1#')
+          echo "issue_number=$ISSUE_NUMBER" >> "$GITHUB_OUTPUT"
