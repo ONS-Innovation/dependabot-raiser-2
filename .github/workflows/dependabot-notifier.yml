@@ -17,5 +17,5 @@ jobs:
                GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
               run: |
                 gh issue comment 35 \
-                --repo org/template-repo \
-                --body "Dependabot PR in [${{ github.repository }}](${{ github.event.pull_request.html_url }})"
+                --repo ONS-Innovation/python-rap-template \
+                --body "Dependabot PR has been raised"
