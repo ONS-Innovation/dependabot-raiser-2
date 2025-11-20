@@ -6,11 +6,13 @@ permissions:
   pull-requests: write
 
 on:
-  push:
+  pull_request:
+    types: [opened, reopened]
     branches: ["**"]
 
 jobs:
   create-dependabot-issue:
+    if: github.actor == 'dependabot[bot]'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
