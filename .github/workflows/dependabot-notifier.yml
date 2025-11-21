@@ -2,6 +2,7 @@ name: Push Dependabot PRs
 
 permissions:
   contents: read
+  issues: write
   pull-requests: write
 
 on:
@@ -10,12 +11,18 @@ on:
     branches: ["**"]
 
 jobs:
-    notify-template:
-        if: github.actor == 'dependabot[bot]'
-        runs-on: ubuntu-latest
-        steps:
-            - name: Post comment using GitHub CLI
-              run: |
-                gh issue comment 35 \
-                --repo org/template-repo \
-                --body "Dependabot PR in [${{ github.repository }}](${{ github.event.pull_request.html_url }})"
+  create-dependabot-issue:
+    if: github.actor == 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Create issue
+        id: create_issue
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ISSUE_URL="https://github.com/${{ github.repository }}/commit/${{ github.sha }}"
+          CREATED_URL=$(gh issue create \
+            --title "Dependabot PR in ${{ github.repository }}" \
+            --body "@joepercival Dependabot PR detected at commit: $ISSUE_URL")
